@@ -19,3 +19,6 @@ PS C:\Users\ortizb\Desktop\seguridad> py attack.py
 Introduce el nombre de usuario a atacar: admin
 [*] Iniciando ataque de fuerza bruta contra el usuario: 'admin'
 [+] Probando... (Intento #1000, Contraseña actual: '01')
+uvicorn main:app --reload --host 127.0.0.1 --port 8000
+La API estará en http://127.0.0.1:8000.
+Abre el navegador en:
