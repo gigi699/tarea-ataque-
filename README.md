@@ -1,68 +1,46 @@
 # tarea-ataque-
-PS C:\Users\ortizb\Desktop> cd .\seguridad\
-PS C:\Users\ortizb\Desktop\seguridad> ls
+Crear el entorno virtual
+python -m venv venv (si no te genera errores puedes probar usando "py" en lugar de "python", Por qué da error? Ni idea, pero así me funciono)
 
+Activar en Windows
+.\venv\Scripts\activate
 
-    Directorio: C:\Users\ortizb\Desktop\seguridad
+Activar en macOS/Linux
+source venv/bin/activate
 
+Instala las dependencias. Utiliza el archivo requirements.txt para instalar todas las librerías necesarias.
 
-Mode                 LastWriteTime         Length Name
-----                 -------------         ------ ----
-d-----         7/10/2025     11:13                venv
-d-----         7/10/2025     11:15                __pycache__
--a----         7/10/2025      8:05           2415 attack.py
--a----         11/6/2025     15:23           4558 codigo funcional royecto.txt
--a----         7/10/2025      8:35           4920 usuarios_lab.py
+pip install -r requirements.txt
 
+Ejecución de la API Una vez configurado el entorno, puedes iniciar el servidor de la API.
+Abre una terminal en la raíz del proyecto.
 
-PS C:\Users\ortizb\Desktop\seguridad> py attack.py
-Introduce el nombre de usuario a atacar: admin
-[*] Iniciando ataque de fuerza bruta contra el usuario: 'admin'
-[+] Probando... (Intento #1000, Contraseña actual: '01')
-1️⃣ Crear el entorno virtual
+Ejecuta el siguiente comando:
 
-En la carpeta de tu proyecto (C:\Users\ortizb\Desktop\seguridad) abre la terminal y ejecuta:
+uvicorn main:app --reload
 
-python -m venv venv
+O también puedes usar:
 
+fastapi dev
 
-Esto creará una carpeta llamada venv dentro de tu proyecto con Python aislado.
+El servidor estará activo en http://127.0.0.1:8000.
 
-2️⃣ Activar el entorno virtual
+Puedes acceder a la documentación interactiva de la API (generada por Swagger UI) en http://127.0.0.1:8000/docs.
 
-En Windows (CMD):
+Análisis de Seguridad y Demostración de Vulnerabilidad Esta API tiene un endpoint /login que es vulnerable a ataques de fuerza bruta. Esto se debe a dos razones principales:
+No hay límite de intentos (Rate Limiting): Un atacante puede intentar iniciar sesión miles de veces sin ser bloqueado.
 
-venv\Scripts\activate
+No hay bloqueo de cuentas: Una cuenta puede ser objeto de infinitos intentos fallidos sin que se bloquee temporalmente.
 
+Cómo Demostrar la Vulnerabilidad El script Brute_force.py está diseñado para simular este ataque en nuestro entorno local y controlado.
 
-Si usas PowerShell:
+Asegúrate de que el servidor de la API se esté ejecutando (paso anterior).
 
-venv\Scripts\Activate.ps1
+Abre una segunda terminal.
 
+Ejecuta el script de ataque, especificando el nombre de usuario que quieres vulnerar. La API tiene dos usuarios por defecto: admin (contraseña: "admin") y Dario (contraseña: "abc").
 
-Si la activación funciona, verás (venv) al inicio de la línea de comandos.
+Intenta encontrar la contraseña del usuario "admin"
+python Brute_force.py admin
 
-3️⃣ Instalar los paquetes necesarios
-
-Con el entorno activado, instala FastAPI, Uvicorn y email-validator:
-
-pip install fastapi uvicorn "pydantic[email]"
-
-
-Esto asegura que tengas todo lo que tu proyecto necesita.
-
-4️⃣ Ejecutar tu API
-
-Con el entorno activo, corre:
-
-python -m uvicorn usuarios_lab:app --reload
-
-
-Ahora debería correr sin conflictos de importación.
-
-💡 Tip: Cada vez que cierres la terminal y quieras trabajar en el proyecto, solo activa el entorno con:
-
-venv\Scripts\activate
-uvicorn main:app --reload --host 127.0.0.1 --port 8000
-La API estará en http://127.0.0.1:8000.
-Abre el navegador en:
+Observarás en la terminal del atacante cómo se prueban contraseñas de forma incremental hasta encontrar la correcta. Al mismo tiempo, en la terminal del servidor API, verás el flujo de peticiones POST /login entrantes.
